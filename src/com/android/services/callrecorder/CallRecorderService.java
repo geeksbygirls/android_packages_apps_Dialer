@@ -56,6 +56,8 @@ public class CallRecorderService extends Service {
     private static final String AUDIO_SOURCE_PROPERTY = "persist.call_recording.src";
 
     private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyMMdd_HHmmssSSS");
+    
+    private int mDefaultEncoder;
 
     private final ICallRecorderService.Stub mBinder = new ICallRecorderService.Stub() {
         @Override
@@ -91,6 +93,7 @@ public class CallRecorderService extends Service {
     @Override
     public void onCreate() {
         if (DBG) Log.d(TAG, "Creating CallRecorderService");
+        mDefaultEncoder = getResources().getInteger(R.integer.call_recording_audio_encoder);
     }
 
     @Override
@@ -119,6 +122,26 @@ public class CallRecorderService extends Service {
             // ignore and fall through
         }
         return 0;
+    }       
+
+    private int getAudioFormat() {
+        int formatValue =  Settings.System.getInt(
+                getContentResolver(), Settings.System.CALL_RECORDING_FORMAT, mDefaultEncoder);
+        if (formatValue == 0){
+            return MediaRecorder.OutputFormat.AMR_WB;
+        } else {
+            return MediaRecorder.OutputFormat.MPEG_4;
+        }
+    }
+
+    private int getAudioEncoder() {
+        int formatValue =  Settings.System.getInt(
+                getContentResolver(), Settings.System.CALL_RECORDING_FORMAT, mDefaultEncoder);
+        if (formatValue == 0){
+            return MediaRecorder.AudioEncoder.AMR_WB;
+        } else {
+            return MediaRecorder.AudioEncoder.HE_AAC;
+        }
     }
 
     private synchronized boolean startRecordingInternal(File file) {
@@ -230,9 +253,12 @@ public class CallRecorderService extends Service {
             number = "unknown";
         }
 
-        int formatChoice = getAudioFormatChoice();
-        String extension = formatChoice == 0 ? ".amr" : ".m4a";
-        return number + "_" + timestamp + extension;
+        int audioFormat = getAudioFormat();
+         if (audioFormat == MediaRecorder.OutputFormat.AMR_WB) {
+             return number + "_" + timestamp + ".amr";
+         } else {
+             return number + "_" + timestamp + ".m4a ";
+         }
     }
 
     public static boolean isEnabled(Context context) {
