@@ -35,7 +35,7 @@ public class SpeakerSettingsFragment extends PreferenceFragment
     private static final String PROXIMITY_AUTO_SPEAKER  = "proximity_auto_speaker";
     private static final String PROXIMITY_AUTO_SPEAKER_DELAY  = "proximity_auto_speaker_delay";
     private static final String PROXIMITY_AUTO_SPEAKER_INCALL_ONLY  = "proximity_auto_speaker_incall_only";
-    private static final String BUTTON_PROXIMITY_KEY   = "button_proximity_key";
+    private static final String IN_CALL_PROXIMITY_SENSOR   = "button_proximity_key";
 
     private SwitchPreference mProxSpeaker;
     private SlimSeekBarPreference mProxSpeakerDelay;
@@ -48,7 +48,6 @@ public class SpeakerSettingsFragment extends PreferenceFragment
 
         addPreferencesFromResource(R.xml.speaker_settings);
         final ContentResolver resolver = getActivity().getContentResolver();
-        PreferenceScreen preferenceScreen = getPreferenceScreen();
 
         mProxSpeaker = (SwitchPreference) findPreference(PROXIMITY_AUTO_SPEAKER);
         mProxSpeaker.setChecked(Settings.System.getInt(resolver,
@@ -73,9 +72,9 @@ public class SpeakerSettingsFragment extends PreferenceFragment
                 Settings.System.PROXIMITY_AUTO_SPEAKER_INCALL_ONLY, 0) == 1);
         mProxSpeakerIncallOnly.setOnPreferenceChangeListener(this);
 
-        mButtonProximity = (SwitchPreference) findPreference(BUTTON_PROXIMITY_KEY);
+        mButtonProximity = (SwitchPreference) findPreference(IN_CALL_PROXIMITY_SENSOR);
         mButtonProximity.setChecked(Settings.System.getInt(resolver,
-                Settings.System.BUTTON_PROXIMITY_KEY, 0) == 1);
+                Settings.System.IN_CALL_PROXIMITY_SENSOR, 0) == 1);
         mButtonProximity.setOnPreferenceChangeListener(this);
     }
 
@@ -96,7 +95,7 @@ public class SpeakerSettingsFragment extends PreferenceFragment
                     ((Boolean) newValue) ? 1 : 0);
             return true;
         } else if (preference == mButtonProximity) {
-            Settings.System.putInt(resolver, Settings.System.BUTTON_PROXIMITY_KEY,
+            Settings.System.putInt(resolver, Settings.System.IN_CALL_PROXIMITY_SENSOR,
                     ((Boolean) newValue) ? 1 : 0);
             return true;
         }
