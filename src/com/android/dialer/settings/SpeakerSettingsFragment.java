@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
+import android.preference.SlimSeekBarPreference;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 
@@ -34,10 +35,12 @@ public class SpeakerSettingsFragment extends PreferenceFragment
     private static final String PROXIMITY_AUTO_SPEAKER  = "proximity_auto_speaker";
     private static final String PROXIMITY_AUTO_SPEAKER_DELAY  = "proximity_auto_speaker_delay";
     private static final String PROXIMITY_AUTO_SPEAKER_INCALL_ONLY  = "proximity_auto_speaker_incall_only";
+    private static final String BUTTON_PROXIMITY_KEY   = "button_proximity_key";
 
     private SwitchPreference mProxSpeaker;
-    private ListPreference mProxSpeakerDelay;
+    private SlimSeekBarPreference mProxSpeakerDelay;
     private SwitchPreference mProxSpeakerIncallOnly;
+    private SwitchPreference mButtonProximity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,23 +48,35 @@ public class SpeakerSettingsFragment extends PreferenceFragment
 
         addPreferencesFromResource(R.xml.speaker_settings);
         final ContentResolver resolver = getActivity().getContentResolver();
+        PreferenceScreen preferenceScreen = getPreferenceScreen();
 
         mProxSpeaker = (SwitchPreference) findPreference(PROXIMITY_AUTO_SPEAKER);
         mProxSpeaker.setChecked(Settings.System.getInt(resolver,
                 Settings.System.PROXIMITY_AUTO_SPEAKER, 0) == 1);
         mProxSpeaker.setOnPreferenceChangeListener(this);
 
-        mProxSpeakerDelay = (ListPreference) findPreference(PROXIMITY_AUTO_SPEAKER_DELAY);
+        mProxSpeakerDelay = (SlimSeekBarPreference) findPreference(PROXIMITY_AUTO_SPEAKER_DELAY);
         int proxDelay = Settings.System.getInt(resolver,
                 Settings.System.PROXIMITY_AUTO_SPEAKER_DELAY, 100);
-        mProxSpeakerDelay.setValue(String.valueOf(proxDelay));
-        mProxSpeakerDelay.setOnPreferenceChangeListener(this);
-        updateProximityDelaySummary(proxDelay);
+        mProxSpeakerDelay.setDefault((proxDelay / 100) - 1);
+        if (mProxSpeakerDelay != null) {
+            mProxSpeakerDelay.setDefault(100);
+            mProxSpeakerDelay.isMilliseconds(true);
+            mProxSpeakerDelay.setInterval(1);
+            mProxSpeakerDelay.minimumValue(100);
+            mProxSpeakerDelay.multiplyValue(100);
+            mProxSpeakerDelay.setOnPreferenceChangeListener(this);
+        }
 
         mProxSpeakerIncallOnly = (SwitchPreference) findPreference(PROXIMITY_AUTO_SPEAKER_INCALL_ONLY);
         mProxSpeakerIncallOnly.setChecked(Settings.System.getInt(resolver,
                 Settings.System.PROXIMITY_AUTO_SPEAKER_INCALL_ONLY, 0) == 1);
         mProxSpeakerIncallOnly.setOnPreferenceChangeListener(this);
+
+        mButtonProximity = (SwitchPreference) findPreference(BUTTON_PROXIMITY_KEY);
+        mButtonProximity.setChecked(Settings.System.getInt(resolver,
+                Settings.System.BUTTON_PROXIMITY_KEY, 0) == 1);
+        mButtonProximity.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -75,10 +90,13 @@ public class SpeakerSettingsFragment extends PreferenceFragment
         } else if (preference == mProxSpeakerDelay) {
             int proxDelay = Integer.valueOf((String) newValue);
             Settings.System.putInt(resolver, Settings.System.PROXIMITY_AUTO_SPEAKER_DELAY, proxDelay);
-            updateProximityDelaySummary(proxDelay);
             return true;
         } else if (preference == mProxSpeakerIncallOnly) {
             Settings.System.putInt(resolver, Settings.System.PROXIMITY_AUTO_SPEAKER_INCALL_ONLY,
+                    ((Boolean) newValue) ? 1 : 0);
+            return true;
+        } else if (preference == mButtonProximity) {
+            Settings.System.putInt(resolver, Settings.System.BUTTON_PROXIMITY_KEY,
                     ((Boolean) newValue) ? 1 : 0);
             return true;
         }

@@ -26,6 +26,10 @@
   <string name="prox_auto_speaker_incall_only_title">Seulement pendant les appels</string>
   <string name="prox_auto_speaker_incall_only_summary_on">Lors des appels sortants, le haut-parleur s\'active après la réponse du correspondant</string>
   <string name="prox_auto_speaker_incall_only_summary_off">La fonction d\'écoute sera actif sur tous les appels reçus (Par défaut) </string>
+  <!-- Proximity sensor enable -->
+  <string name="proximity_mode_title">Activer le capteur de proximité</string>
+  <string name="proximity_on_summary">En appel, utilisez le capteur de proximité pour éteindre l\'écran</string>
+  <string name="proximity_off_summary">En appel, l\'écran reste allumé</string>
   <!-- Smart Options -->
   <string name="smart_category_title">Options intelligentes</string>
   <string name="smart_mute_title">Mute intelligent</string>

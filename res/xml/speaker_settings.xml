@@ -23,12 +23,10 @@
         android:persistent="false"
         android:defaultValue="false" />
 
-    <ListPreference
+    <SlimSeekBarPreference
         android:key="proximity_auto_speaker_delay"
         android:title="@string/prox_auto_speaker_delay_title"
-        android:dialogTitle="@string/prox_auto_speaker_delay_dialog_title"
-        android:entries="@array/proximity_delay_entries"
-        android:entryValues="@array/proximity_delay_values"
+        android:summary="@string/prox_auto_speaker_delay_summary"
         android:persistent="false"
         android:dependency="proximity_auto_speaker" />
 
@@ -40,5 +38,11 @@
         android:persistent="false"
         android:defaultValue="false"
         android:dependency="proximity_auto_speaker" />
+
+    <SwitchPreference
+        android:key="button_proximity_key"
+        android:title="@string/proximity_mode_title"
+        android:persistent="false"
+        android:summary="@string/proximity_on_summary" />
 
 </PreferenceScreen>
