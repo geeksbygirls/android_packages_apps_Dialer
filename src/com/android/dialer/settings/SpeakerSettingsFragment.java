@@ -79,24 +79,24 @@ public class SpeakerSettingsFragment extends PreferenceFragment
     }
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
+    public boolean onPreferenceChange(Preference preference, Object objValue) {
         final ContentResolver resolver = getActivity().getContentResolver();
 
         if (preference == mProxSpeaker) {
             Settings.System.putInt(resolver, Settings.System.PROXIMITY_AUTO_SPEAKER,
-                    ((Boolean) newValue) ? 1 : 0);
+                    ((Boolean) objValue) ? 1 : 0);
             return true;
         } else if (preference == mProxSpeakerDelay) {
-            int proxDelay = Integer.valueOf((String) newValue);
+            int proxDelay = Integer.valueOf((String) objValue);
             Settings.System.putInt(resolver, Settings.System.PROXIMITY_AUTO_SPEAKER_DELAY, proxDelay);
             return true;
         } else if (preference == mProxSpeakerIncallOnly) {
             Settings.System.putInt(resolver, Settings.System.PROXIMITY_AUTO_SPEAKER_INCALL_ONLY,
-                    ((Boolean) newValue) ? 1 : 0);
+                    ((Boolean) objValue) ? 1 : 0);
             return true;
         } else if (preference == mButtonProximity) {
             Settings.System.putInt(resolver, Settings.System.IN_CALL_PROXIMITY_SENSOR,
-                    ((Boolean) newValue) ? 1 : 0);
+                    ((Boolean) objValue) ? 1 : 0);
             return true;
         }
         return false;
